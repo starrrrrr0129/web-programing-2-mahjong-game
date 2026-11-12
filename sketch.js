@@ -1639,12 +1639,6 @@ function drawReflectedBeam(b) {
 // 勝利演出
 // ビーム → 爆発 → 東を略奪 → ロン
 // ==================================
-
-//
-// 勝利演出
-// ビーム → 爆発 → 東を略奪
-// → パチンコ風の大当たり演出 → 勝利
-//
 function drawWinEffect() {
 
   let t = millis() - effectStart;
@@ -1655,9 +1649,12 @@ function drawWinEffect() {
 
   // 中は対面を向いたまま
   push();
+
   translate(chu.x, chu.y);
   rotate(PI);
+
   mjDrawFace("中", chu.size);
+
   pop();
 
   // ==================================
@@ -1682,6 +1679,7 @@ function drawWinEffect() {
     rotate(PI);
 
     scale(1 - (t / 2500) * 0.25);
+
     mjDrawFace("東", 0.7);
 
     pop();
@@ -1692,13 +1690,18 @@ function drawWinEffect() {
   // ==================================
   else if (t < 3200) {
 
-    let explosion = (t - 2500) / 700;
+    let explosion =
+      (t - 2500) / 700;
 
     push();
     noStroke();
 
     // 赤い爆発
-    fill(255, 70, 30, 210 * (1 - explosion));
+    fill(
+      255, 70, 30,
+      210 * (1 - explosion)
+    );
+
     circle(
       enemy.x,
       enemy.y,
@@ -1706,7 +1709,11 @@ function drawWinEffect() {
     );
 
     // 黄色い光
-    fill(255, 215, 90, 230 * (1 - explosion));
+    fill(
+      255, 215, 90,
+      230 * (1 - explosion)
+    );
+
     circle(
       enemy.x,
       enemy.y,
@@ -1714,7 +1721,11 @@ function drawWinEffect() {
     );
 
     // 白い閃光
-    fill(255, 255, 255, 255 * (1 - explosion));
+    fill(
+      255, 255, 255,
+      255 * (1 - explosion)
+    );
+
     circle(
       enemy.x,
       enemy.y,
@@ -1743,7 +1754,8 @@ function drawWinEffect() {
       let angle = TWO_PI * i / 28;
 
       let distance =
-        15 + explosion * (75 + (i % 4) * 15);
+        15 + explosion *
+        (75 + (i % 4) * 15);
 
       let x =
         enemy.x + cos(angle) * distance;
@@ -1788,15 +1800,18 @@ function drawWinEffect() {
     // ==================================
     if (t < 4400) {
 
+      // 自分の13枚を表示
       drawWinningHand(455, false);
 
-      let p = (t - 3200) / 1200;
+      let p =
+        (t - 3200) / 1200;
 
       p = constrain(p, 0, 1);
 
       // なめらかな移動
       p = p * p * (3 - 2 * p);
 
+      // 最後の東の位置へ移動
       let x =
         lerp(enemy.x, layout.lastX, p);
 
@@ -1807,6 +1822,7 @@ function drawWinEffect() {
 
       translate(x, y);
 
+      // 飛んでくる途中で回転
       rotate(PI * (1 - p));
 
       mjDrawFace(
@@ -1818,189 +1834,43 @@ function drawWinEffect() {
     }
 
     // ==================================
-    // ⑤ 4.4秒〜：大当たり演出
+    // ⑤ 4.4秒〜：ロン・勝利
     // ==================================
     else {
 
       // 14枚の完成形
       drawWinningHand(455, true);
 
-      // 金色と虹色の演出
-      if (t < 7000) {
+      fill(255, 225, 95);
+      noStroke();
+      textAlign(CENTER, CENTER);
 
-    
+      // セリフが重ならないように調整
+      textSize(25);
+      text("対面を中ビームで撃破！", 200, 260);
 
-      } else {
+      textSize(30);
+      text("東を略奪！", 200, 315);
 
-        // 演出後に勝利を表示
-        fill(255, 225, 95);
-        noStroke();
-        textAlign(CENTER, CENTER);
+      textSize(38);
+      text("勝利！", 200, 370);
 
-        textSize(25);
-        text("対面を中ビームで撃破！", 200, 260);
+      // ゲームオリジナルの役
+      textSize(20);
+      text("役　撃破　一翻", 200, 525);
 
-        textSize(30);
-        text("東を略奪！", 200, 315);
-
-        textSize(38);
-        text("勝利！", 200, 370);
-
-        textSize(20);
-        text("役　撃破　一翻", 200, 525);
-
-        textSize(17);
-        text("略奪　二翻", 200, 560);
-      }
+      // 実際に成立する役
+      textSize(17);
+      text("略奪　二翻", 200, 560);
     }
   }
 
-  // ==================================
-  // パチンコ風の大当たり演出
-  // ==================================
-  if (t >= 4400 && t < 7000) {
-
-    let flashTime = t - 4400;
-
-    push();
-    rectMode(CORNER);
-    noStroke();
-
-    // 220ミリ秒ごとに色を切り替える
-    if (floor(flashTime / 220) % 2 === 0) {
-      fill(255, 255, 180, 225);
-    } else {
-      fill(255, 160, 0, 200);
-    }
-
-    // 画面全体を光らせる
-    rect(0, 0, width, height);
-
-    // 放射状に広がる金色の光
-    translate(width / 2, height / 2);
-
-    for (let i = 0; i < 24; i++) {
-
-      let angle =
-        TWO_PI * i / 24 + flashTime * 0.003;
-
-      stroke(255, 255, 255, 200);
-      strokeWeight(5);
-
-      line(
-        cos(angle) * 40,
-        sin(angle) * 40,
-        cos(angle) * 450,
-        sin(angle) * 450
-      );
-    }
-
-    pop();
-  }
-
-  // 9秒で通常の勝利画面へ
-  if (t >= 9000) {
+  // 約6秒で演出終了
+  if (t >= 6000) {
     result = "win";
   }
 }
 
-
-// ==================================
-// パチンコ風の大当たり演出
-// ==================================
-function drawJackpotFlash(t) {
-
-  let elapsed = t - 4400;
-  let progress = elapsed / 2600;
-
-  push();
-
-  // ==================================
-  // 金色と赤色の画面点滅
-  // ==================================
-  rectMode(CORNER);
-  noStroke();
-
-  if (floor(elapsed / 300) % 2 === 0) {
-    fill(255, 215, 35, 110);
-  } else {
-    fill(255, 100, 40, 45);
-  }
-
-  rect(0, 0, width, height);
-
-  // ==================================
-  // 放射状に回転する金色の光
-  // ==================================
-  translate(width / 2, height / 2);
-
-  for (let i = 0; i < 24; i++) {
-
-    let angle =
-      TWO_PI * i / 24 + progress * 5;
-
-    stroke(255, 225, 65, 110);
-    strokeWeight(3 + i % 3);
-
-    line(
-      cos(angle) * 65,
-      sin(angle) * 65,
-      cos(angle) * 390,
-      sin(angle) * 480
-    );
-  }
-
-  // ==================================
-  // 中央から広がる光の輪
-  // ==================================
-  noFill();
-
-  for (let i = 0; i < 3; i++) {
-
-    let r =
-      (elapsed * 0.32 + i * 210) % 650;
-
-    stroke(
-      255, 245, 145,
-      170 * (1 - r / 650)
-    );
-
-    strokeWeight(8);
-    circle(0, 0, r);
-  }
-
-  // ==================================
-  // 虹色のキラキラ
-  // ==================================
-  noStroke();
-
-  for (let i = 0; i < 75; i++) {
-
-    let angle =
-      i * 2.4 + progress * 6;
-
-    let r =
-      (i * 41 +
-      elapsed * (0.08 + i % 4 * 0.02)) % 430;
-
-    let x = cos(angle) * r;
-    let y = sin(angle) * r * 1.2;
-
-    if (i % 3 === 0) {
-      fill(255, 240, 105, 230);
-    } else if (i % 3 === 1) {
-      fill(105, 240, 255, 210);
-    } else {
-      fill(255, 110, 220, 220);
-    }
-
-    let s = 4 + i % 5 * 2;
-
-    circle(x, y, s);
-  }
-
-  pop();
-}
 
 // ==================================
 // 勝利結果画面
