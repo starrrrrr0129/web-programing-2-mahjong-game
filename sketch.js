@@ -1828,7 +1828,7 @@ function drawWinEffect() {
       // 金色と虹色の演出
       if (t < 7000) {
 
-        drawJackpotFlash(t);
+    
 
       } else {
 
@@ -1853,6 +1853,49 @@ function drawWinEffect() {
         text("略奪　二翻", 200, 560);
       }
     }
+  }
+
+  // ==================================
+  // パチンコ風の大当たり演出
+  // ==================================
+  if (t >= 4400 && t < 7000) {
+
+    let flashTime = t - 4400;
+
+    push();
+    rectMode(CORNER);
+    noStroke();
+
+    // 220ミリ秒ごとに色を切り替える
+    if (floor(flashTime / 220) % 2 === 0) {
+      fill(255, 255, 180, 225);
+    } else {
+      fill(255, 160, 0, 200);
+    }
+
+    // 画面全体を光らせる
+    rect(0, 0, width, height);
+
+    // 放射状に広がる金色の光
+    translate(width / 2, height / 2);
+
+    for (let i = 0; i < 24; i++) {
+
+      let angle =
+        TWO_PI * i / 24 + flashTime * 0.003;
+
+      stroke(255, 255, 255, 200);
+      strokeWeight(5);
+
+      line(
+        cos(angle) * 40,
+        sin(angle) * 40,
+        cos(angle) * 450,
+        sin(angle) * 450
+      );
+    }
+
+    pop();
   }
 
   // 9秒で通常の勝利画面へ
