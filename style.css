@@ -13,8 +13,8 @@ body {
   justify-content: center;
   align-items: center;
 
-  /* 背景を麻雀卓と同じ緑色に */
-  background: rgb(30, 90, 65);
+  /* 周囲を暗い緑色に */
+  background: rgb(15, 42, 32);
 }
 
 main {
@@ -25,5 +25,17 @@ main {
 
 canvas {
   display: block;
+
+  /* 画面に合わせて大きくする */
+  width: min(92vw, calc(90vh * 400 / 650), 680px);
+  height: auto;
+
+  /* 金色の枠線 */
+  border: 5px solid #d4af37;
+  border-radius: 8px;
+
+  /* 立体感のある影 */
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
 }
+
 
